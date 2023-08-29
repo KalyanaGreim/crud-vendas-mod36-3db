@@ -3,9 +3,8 @@ package br.com.kalyana.anotacao;
 import java.lang.annotation.*;
 
 @Documented
-@Target(ElementType.FIELD)
+@Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface TipoChave {
-
+public @interface Tabela {
     String value();
 }

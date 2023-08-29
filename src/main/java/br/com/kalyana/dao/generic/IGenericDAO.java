@@ -1,27 +1,22 @@
-package br.com.kalyana.service.generics;
+package br.com.kalyana.dao.generic;
 
 import br.com.kalyana.dao.Persistente;
 import br.com.kalyana.exception.DAOException;
+import br.com.kalyana.exception.MaisDeUmRegistroException;
+import br.com.kalyana.exception.TableException;
 import br.com.kalyana.exception.TipoChaveNaoEncontradaException;
 
 import java.io.Serializable;
 import java.util.Collection;
 
-public interface IGenericService <T extends Persistente, E extends Serializable> {
-    /**
-     * Método para cadastrar novos registro no banco de dados
-     *
-     * @param entity a ser cadastrado
-     * @return retorna verdadeiro para cadastrado e falso para não cadastrado
-     * @throws DAOException
-     */
+public interface IGenericDAO <T extends Persistente, E extends Serializable> {
+
     public Boolean cadastrar(T entity) throws TipoChaveNaoEncontradaException, DAOException;
 
     /**
      * Método para excluir um registro do banco de dados
      *
      * @param valor chave única do dado a ser excluído
-     * @throws DAOException
      */
     public void excluir(E valor) throws DAOException;
 
@@ -29,7 +24,6 @@ public interface IGenericService <T extends Persistente, E extends Serializable>
      *Método para alterar um registro no bando de dados.
      *
      * @param entity a ser atualizado
-     * @throws DAOException
      */
     public void alterar(T entity) throws TipoChaveNaoEncontradaException, DAOException;
 
@@ -38,9 +32,10 @@ public interface IGenericService <T extends Persistente, E extends Serializable>
      *
      * @param valor chave única do dado a ser consultado
      * @return
-     * @throws DAOException
+     * @throws MaisDeUmRegistroException
+     * @throws TableException
      */
-    public T consultar(E valor) throws DAOException;
+    public T consultar(E valor) throws MaisDeUmRegistroException, TableException, DAOException;
 
     /**
      * Método que irá retornar todos os registros do banco de dados de uma determinado dado ou tabela
@@ -49,5 +44,5 @@ public interface IGenericService <T extends Persistente, E extends Serializable>
      * @throws DAOException
      */
     public Collection<T> buscarTodos() throws DAOException;
-
 }
+
