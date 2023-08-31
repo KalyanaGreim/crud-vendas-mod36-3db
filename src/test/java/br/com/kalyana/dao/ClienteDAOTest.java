@@ -102,6 +102,7 @@ public class ClienteDAOTest {
         cliente.setEstado("SP");
         cliente.setNumero(10);
         cliente.setTel(1199999999L);
+        cliente.setSexo("M");
         Boolean retorno = clienteDao.cadastrar(cliente);
         Assert.assertTrue(retorno);
 

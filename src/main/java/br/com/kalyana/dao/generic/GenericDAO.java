@@ -1,6 +1,5 @@
 package br.com.kalyana.dao.generic;
 
-import br.com.kalyana.SingletonMap;
 import br.com.kalyana.anotacao.ColunaTabela;
 import br.com.kalyana.anotacao.Tabela;
 import br.com.kalyana.anotacao.TipoChave;
@@ -17,7 +16,6 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 
 public abstract class GenericDAO<T extends Persistente, E extends Serializable> implements IGenericDAO<T,E> {
 

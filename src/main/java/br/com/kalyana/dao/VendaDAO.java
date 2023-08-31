@@ -22,8 +22,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import static br.com.kalyana.dao.generic.jdbc.ConnectionFactory.getConnection;
-
 public class VendaDAO extends GenericDAO<Venda, String> implements IVendaDAO {
 
 
@@ -216,7 +214,7 @@ public class VendaDAO extends GenericDAO<Venda, String> implements IVendaDAO {
     private StringBuilder sqlBaseSelect() {
         StringBuilder sb = new StringBuilder();
         sb.append("SELECT V.ID AS ID_VENDA, V.CODIGO, V.VALOR_TOTAL, V.DATA_VENDA, V.STATUS_VENDA, ");
-        sb.append("C.ID AS ID_CLIENTE, C.NOME, C.CPF, C.TEL, C.ENDERECO, C.NUMERO, C.CIDADE, C.ESTADO ");
+        sb.append("C.ID AS ID_CLIENTE, C.NOME, C.CPF, C.TEL, C.ENDERECO, C.NUMERO, C.CIDADE, C.ESTADO, C.SEXO ");
         sb.append("FROM TB_VENDA V ");
         sb.append("INNER JOIN TB_CLIENTE C ON V.ID_CLIENTE_FK = C.ID ");
         return sb;
