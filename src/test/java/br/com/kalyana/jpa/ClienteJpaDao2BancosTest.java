@@ -1,6 +1,7 @@
 package br.com.kalyana.jpa;
 
 import br.com.kalyana.dao.jpa.ClienteJpaDAO;
+import br.com.kalyana.dao.jpa.ClienteJpaDB2DAO;
 import br.com.kalyana.dao.jpa.IClienteJpaDAO;
 import br.com.kalyana.domain.jpa.ClienteJpa;
 import br.com.kalyana.exception.DAOException;
@@ -10,27 +11,50 @@ import br.com.kalyana.exception.TipoChaveNaoEncontradaException;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Test;
-import static org.junit.Assert.assertTrue;
+
 import java.util.Collection;
 import java.util.Random;
 
-public class ClienteJpaDaoTest {
+import static org.junit.Assert.assertTrue;
+
+public class ClienteJpaDao2BancosTest {
 
     private IClienteJpaDAO<ClienteJpa> clienteDao;
 
+    private IClienteJpaDAO<ClienteJpa> clienteDB2Dao;
+
     private Random rd;
 
-    public ClienteJpaDaoTest() {
+    public ClienteJpaDao2BancosTest() {
         this.clienteDao = new ClienteJpaDAO();
+        this.clienteDB2Dao = new ClienteJpaDB2DAO();
         rd = new Random();
     }
 
     @After
     public void end() throws DAOException {
-        Collection<ClienteJpa> list = clienteDao.buscarTodos();
+        Collection<ClienteJpa> list1 = clienteDao.buscarTodos();
+        excluir1(list1);
+
+        Collection<ClienteJpa> list2 = clienteDB2Dao.buscarTodos();
+        excluir2(list2);
+    }
+
+    private void excluir1(Collection<ClienteJpa> list) {
         list.forEach(cli -> {
             try {
                 clienteDao.excluir(cli);
+            } catch (DAOException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+        });
+    }
+
+    private void excluir2(Collection<ClienteJpa> list) {
+        list.forEach(cli -> {
+            try {
+                clienteDB2Dao.excluir(cli);
             } catch (DAOException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
@@ -45,6 +69,12 @@ public class ClienteJpaDaoTest {
 
         ClienteJpa clienteConsultado = clienteDao.consultar(cliente.getId());
         Assert.assertNotNull(clienteConsultado);
+
+        cliente.setId(null);
+        clienteDB2Dao.cadastrar(cliente);
+
+        ClienteJpa clienteConsultado2 = clienteDB2Dao.consultar(cliente.getId());
+        Assert.assertNotNull(clienteConsultado2);
 
     }
 
@@ -86,12 +116,12 @@ public class ClienteJpaDaoTest {
         ClienteJpa clienteConsultado = clienteDao.consultar(cliente.getId());
         Assert.assertNotNull(clienteConsultado);
 
-        clienteConsultado.setNome("Kaly Greim");
+        clienteConsultado.setNome("Rodrigo Pires");
         clienteDao.alterar(clienteConsultado);
 
         ClienteJpa clienteAlterado = clienteDao.consultar(clienteConsultado.getId());
         Assert.assertNotNull(clienteAlterado);
-        Assert.assertEquals("Kaly Greim", clienteAlterado.getNome());
+        Assert.assertEquals("Rodrigo Pires", clienteAlterado.getNome());
 
         clienteDao.excluir(cliente);
         clienteConsultado = clienteDao.consultar(clienteAlterado.getId());
@@ -129,13 +159,12 @@ public class ClienteJpaDaoTest {
     private ClienteJpa criarCliente() {
         ClienteJpa cliente = new ClienteJpa();
         cliente.setCpf(rd.nextLong());
-        cliente.setNome("Kaly");
-        cliente.setCidade("Parana");
+        cliente.setNome("Rodrigo");
+        cliente.setCidade("São Paulo");
         cliente.setEnd("End");
-        cliente.setEstado("PR");
+        cliente.setEstado("SP");
         cliente.setNumero(10);
         cliente.setTel(1199999999L);
         return cliente;
     }
-
 }

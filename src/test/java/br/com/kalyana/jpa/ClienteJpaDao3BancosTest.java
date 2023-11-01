@@ -1,8 +1,11 @@
 package br.com.kalyana.jpa;
 
 import br.com.kalyana.dao.jpa.ClienteJpaDAO;
+import br.com.kalyana.dao.jpa.ClienteJpaDB2DAO;
+import br.com.kalyana.dao.jpa.ClienteJpaDB3DAO;
 import br.com.kalyana.dao.jpa.IClienteJpaDAO;
 import br.com.kalyana.domain.jpa.ClienteJpa;
+import br.com.kalyana.domain.jpa.ClienteJpa2;
 import br.com.kalyana.exception.DAOException;
 import br.com.kalyana.exception.MaisDeUmRegistroException;
 import br.com.kalyana.exception.TableException;
@@ -10,27 +13,56 @@ import br.com.kalyana.exception.TipoChaveNaoEncontradaException;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Test;
-import static org.junit.Assert.assertTrue;
+
 import java.util.Collection;
 import java.util.Random;
 
-public class ClienteJpaDaoTest {
+import static org.junit.Assert.assertTrue;
+
+public class ClienteJpaDao3BancosTest {
 
     private IClienteJpaDAO<ClienteJpa> clienteDao;
 
+    private IClienteJpaDAO<ClienteJpa> clienteDB2Dao;
+
+    private IClienteJpaDAO<ClienteJpa2> clienteDB3Dao;
+
     private Random rd;
 
-    public ClienteJpaDaoTest() {
+    public ClienteJpaDao3BancosTest() {
         this.clienteDao = new ClienteJpaDAO();
+        this.clienteDB2Dao = new ClienteJpaDB2DAO();
+        this.clienteDB3Dao = new ClienteJpaDB3DAO();
         rd = new Random();
     }
 
     @After
     public void end() throws DAOException {
         Collection<ClienteJpa> list = clienteDao.buscarTodos();
+        excluir(list, clienteDao);
+
+        Collection<ClienteJpa> list2 = clienteDB2Dao.buscarTodos();
+        excluir(list2, clienteDB2Dao);
+
+        Collection<ClienteJpa2> list3 = clienteDB3Dao.buscarTodos();
+        excluir3(list3);
+    }
+
+    private void excluir(Collection<ClienteJpa> list, IClienteJpaDAO<ClienteJpa> clienteDao) {
         list.forEach(cli -> {
             try {
                 clienteDao.excluir(cli);
+            } catch (DAOException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+        });
+    }
+
+    private void excluir3(Collection<ClienteJpa2> list) {
+        list.forEach(cli -> {
+            try {
+                clienteDB3Dao.excluir(cli);
             } catch (DAOException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
@@ -45,6 +77,18 @@ public class ClienteJpaDaoTest {
 
         ClienteJpa clienteConsultado = clienteDao.consultar(cliente.getId());
         Assert.assertNotNull(clienteConsultado);
+
+        cliente.setId(null);
+        clienteDB2Dao.cadastrar(cliente);
+
+        ClienteJpa clienteConsultado2 = clienteDB2Dao.consultar(cliente.getId());
+        Assert.assertNotNull(clienteConsultado2);
+
+        ClienteJpa2 cliente2 = criarCliente2();
+        clienteDB3Dao.cadastrar(cliente2);
+
+        ClienteJpa2 clienteConsultado3 = clienteDB3Dao.consultar(cliente2.getId());
+        Assert.assertNotNull(clienteConsultado3);
 
     }
 
@@ -86,12 +130,12 @@ public class ClienteJpaDaoTest {
         ClienteJpa clienteConsultado = clienteDao.consultar(cliente.getId());
         Assert.assertNotNull(clienteConsultado);
 
-        clienteConsultado.setNome("Kaly Greim");
+        clienteConsultado.setNome("Rodrigo Pires");
         clienteDao.alterar(clienteConsultado);
 
         ClienteJpa clienteAlterado = clienteDao.consultar(clienteConsultado.getId());
         Assert.assertNotNull(clienteAlterado);
-        Assert.assertEquals("Kaly Greim", clienteAlterado.getNome());
+        Assert.assertEquals("Rodrigo Pires", clienteAlterado.getNome());
 
         clienteDao.excluir(cliente);
         clienteConsultado = clienteDao.consultar(clienteAlterado.getId());
@@ -129,10 +173,22 @@ public class ClienteJpaDaoTest {
     private ClienteJpa criarCliente() {
         ClienteJpa cliente = new ClienteJpa();
         cliente.setCpf(rd.nextLong());
-        cliente.setNome("Kaly");
-        cliente.setCidade("Parana");
+        cliente.setNome("Rodrigo");
+        cliente.setCidade("São Paulo");
         cliente.setEnd("End");
-        cliente.setEstado("PR");
+        cliente.setEstado("SP");
+        cliente.setNumero(10);
+        cliente.setTel(1199999999L);
+        return cliente;
+    }
+
+    private ClienteJpa2 criarCliente2() {
+        ClienteJpa2 cliente = new ClienteJpa2();
+        cliente.setCpf(rd.nextLong());
+        cliente.setNome("Rodrigo");
+        cliente.setCidade("São Paulo");
+        cliente.setEnd("End");
+        cliente.setEstado("SP");
         cliente.setNumero(10);
         cliente.setTel(1199999999L);
         return cliente;
